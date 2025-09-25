@@ -9,12 +9,13 @@
 
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <queue>
 #include <set>
 #include <string>
 #include <unordered_set>
 
-std::string kYourName = "STUDENT TODO"; // Don't forget to change this!
+std::string kYourName = "Kimba SABI"; // Don't forget to change this!
 
 /**
  * Takes in a file name and returns a set containing all of the applicant names as a set.
@@ -27,8 +28,41 @@ std::string kYourName = "STUDENT TODO"; // Don't forget to change this!
  * below it) to use a `std::unordered_set` instead. If you do so, make sure
  * to also change the corresponding functions in `utils.h`.
  */
-std::set<std::string> get_applicants(std::string filename) {
-  // STUDENT TODO: Implement this function.
+std::set<std::string> get_applicants(std::string filename)
+{
+  std::ifstream ifs(filename);
+  std::string applicant;
+  std::set<std::string> applicants_set;
+
+  if (ifs.is_open())
+  {
+    while (std::getline(ifs, applicant))
+    {
+      applicants_set.insert(applicant);
+    }
+  }
+  return applicants_set;
+}
+
+/**
+ * Takes in a student name by reference and returns its initials
+ *
+ * @param name      The student's name.
+ * @return          The initials.
+ */
+std::string get_initials(const std::string& name)
+{
+  std::stringstream ss(name);
+  std::string word;
+  std::string initials;
+
+  while (ss >> word)
+  {
+    initials += word[0];
+  }
+  //std::cout << initials << std::endl;
+
+  return initials;
 }
 
 /**
@@ -39,8 +73,18 @@ std::set<std::string> get_applicants(std::string filename) {
  * @param students  The set of student names.
  * @return          A queue containing pointers to each matching name.
  */
-std::queue<const std::string*> find_matches(std::string name, std::set<std::string>& students) {
-  // STUDENT TODO: Implement this function.
+std::queue<const std::string *> find_matches(std::string& name, std::set<std::string> &students)
+{
+  std::queue<const std::string *> shared_initial_names;
+  std::string initials = get_initials(name);
+
+  for (const auto &student : students)
+  {
+    if (initials == get_initials(student)) {
+      shared_initial_names.push(&student);
+    }
+  }
+  return shared_initial_names;
 }
 
 /**
@@ -53,8 +97,13 @@ std::queue<const std::string*> find_matches(std::string name, std::set<std::stri
  * @return        Your magical one true love.
  *                Will return "NO MATCHES FOUND." if `matches` is empty.
  */
-std::string get_match(std::queue<const std::string*>& matches) {
-  // STUDENT TODO: Implement this function.
+std::string get_match(std::queue<const std::string *> &matches)
+{
+  if (matches.empty()) {
+    return "NO MATCHES FOUND";
+  }
+
+  return *matches.front();
 }
 
 /* #### Please don't remove this line! #### */
